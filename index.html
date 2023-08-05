@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Org.Attendance Sheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            padding: 8px 16px;
+            font-size: 14px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .login-box {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .login-content {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box" id="login-box">
+        <div class="login-content">
+            <h2>Login</h2>
+            <input type="text" id="username" placeholder="Username (ID)">
+            <input type="password" id="password" placeholder="Password">
+            <button id="login-button">Login</button>
+        </div>
+    </div>
+    
+    <center><h1><font color=red size=5>ElevateHub.Org</font></center></h1><br></br><font color=aqua size=6><u>Notice:-</u><br></font><marquee><h3>"In Aves any organization/Association candidate must required to mark Attendance daily"</marquee> </h3></font>
+    <button id="mark-attendance">Mark Attendance</button>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="attendance-body">
+            <!-- Attendance records will be added here -->
+        </tbody>
+    </table>
+    <script>
+        const loginBox = document.getElementById('login-box');
+        const loginButton = document.getElementById('login-button');
+        const markAttendanceButton = document.getElementById('mark-attendance');
+        const attendanceBody = document.getElementById('attendance-body');
+
+        let isAuthenticated = false;
+
+        loginButton.addEventListener('click', () => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'Fulsome' && password === '4044') {
+                isAuthenticated = true;
+                loginBox.style.display = 'none'; // Hide the login box after successful login
+            } else {
+                alert('Login failed. Please check your credentials.');
+            }
+        });
+
+        markAttendanceButton.addEventListener('click', () => {
+            if (!isAuthenticated) {
+                loginBox.style.display = 'flex';
+            } else {
+                const name = prompt('Enter your name:');
+                if (name) {
+                    const date = new Date().toLocaleDateString();
+                    const status = 'Present'; // AI-based status could be implemented here
+
+                    const newRow = document.createElement('tr');
+                    newRow.innerHTML = `
+                        <td>${name}</td>
+                        <td>${date}</td>
+                        <td>${status}</td>
+                    `;
+                    attendanceBody.appendChild(newRow);
+
+                    // Load saved attendance data from localStorage
+                    const savedAttendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+
+                    // Save the new record to localStorage
+                    savedAttendanceData.push({ name, date, status });
+                    localStorage.setItem('attendanceData', JSON.stringify(savedAttendanceData));
+                }
+            }
+        });
+
+        // Load saved attendance data from localStorage
+        const savedAttendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+
+        // Populate the table with saved attendance data
+        savedAttendanceData.forEach(record => {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${record.name}</td>
+                <td>${record.date}</td>
+                <td>${record.status}</td>
+            `;
+            attendanceBody.appendChild(newRow);
+        });
+    </script>
+</body>
+</html>
